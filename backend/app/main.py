@@ -4,6 +4,7 @@ from database import get_db_connection
 from models import User
 from schemas import UserCreate, UserResponse
 import mysql.connector
+import os
 import logging
 
 app = FastAPI()
@@ -24,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def log_main(email: str, success: bool, ip: str = None, action: str):
+def log_main(email: str, success: bool, action: str, ip: str = None):
     status = "SUCCESS" if success else "FAILED"
     message = f"{action} - Email: {email} - Status: {status}"
     if ip:
@@ -32,12 +33,13 @@ def log_main(email: str, success: bool, ip: str = None, action: str):
     logger.info(message)
 
 @app.post("/register/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def register_user(user: UserCreate):
+async def register_user(user: UserCreate, request: Request):
     db_user = User(user.email, user.password, user.first_name, user.last_name)
-    
+
     try:
         connection = get_db_connection()
         if connection is None:
+            log_main(user.email, False, "db_connection_failed", request.client.host)
             raise HTTPException(status_code=500, detail="Database connection failed")
         
         cursor = connection.cursor()
@@ -45,6 +47,7 @@ async def register_user(user: UserCreate):
         # Verificar si el usuario ya existe
         cursor.execute("SELECT email FROM users WHERE email = %s", (db_user.email,))
         if cursor.fetchone():
+            log_main(user.email, False, "email_already_registered", request.client.host)
             raise HTTPException(status_code=400, detail="Email already registered")
         
         # Insertar nuevo usuario
@@ -53,14 +56,8 @@ async def register_user(user: UserCreate):
             (db_user.email, db_user.password, db_user.first_name, db_user.last_name)
         )
         connection.commit()
+        log_main(user.email, True, "user_registered", request.client.host)
 
-        log_main(
-            email=user.email,
-            success=True,
-            ip=request.client.host,
-            "register_user"
-        )
-        
         return UserResponse(
             email=db_user.email,
             first_name=db_user.first_name,
@@ -68,14 +65,10 @@ async def register_user(user: UserCreate):
         )
         
     except mysql.connector.Error as err:
+        log_main(user.email, False, "db_error", request.client.host)
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
 
-        log_main(
-            email=user.email,
-            success=False,
-            ip=request.client.host,
-            "register_user"
-        )
+
 
     finally:
         if connection.is_connected():
@@ -83,7 +76,7 @@ async def register_user(user: UserCreate):
             connection.close()
 
 @app.get("/users/{email}", response_model=UserResponse)
-async def get_user(email: str):
+async def get_user(email: str, request: Request):
     try:
         connection = get_db_connection()
         if connection is None:
@@ -94,32 +87,17 @@ async def get_user(email: str):
         user = cursor.fetchone()
         
         if not user:
+            log_main(user.email, False, "user_not_found", request.client.host)
             raise HTTPException(status_code=404, detail="User not found")
-            log_main(
-                email=user.email,
-                success=False,
-                ip=request.client.host,
-                "user_not_found"
-            )
         else:
-            log_main(
-                email=user.email,
-                success=True,
-                ip=request.client.host,
-                "user_search"
-            )
-        
+            log_main(user.email, True, "user_search", request.client.host)
+
         return user
         
     except mysql.connector.Error as err:
+        log_main(user.email, False, "db_error", request.client.host)
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
-        
-        log_main(
-            email=user.email,
-            success=False,
-            ip=request.client.host,
-            "user_search"
-        )
+
     finally:
         if connection.is_connected():
             cursor.close()
