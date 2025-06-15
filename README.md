@@ -59,11 +59,19 @@ TF_DevOps_IEBS/
 ### Available Endpoints in TAG V1
 Method|Endpoint|Description|Request Body Example
 ------|--------|-----------|--------------------
-POST|	/register/|	Register a new user|{"email":"user@example.com","password":"securePass123","first_name":"John","last_name":"Doe"}
+POST|/register/|Register a new user|{"email":"user@example.com","password":"securePass123","first_name":"John","last_name":"Doe"}
 GET|/users/{email}|	Get user details by email|	-
 
 ### Available Endpoints in TAG V2
 Method|Endpoint|Description|Request Body Example
 ------|--------|-----------|--------------------
 POST|/login/|Login Admin|curl -X POST "http://localhost:8000/login/" -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin@example.com&password=password"
-POST|/admin/users/|Get list users|	curl -X GET "http://localhost:8000/admin/users/" -H "Authorization: Bearer Token"
+GET|/admin/users/|Get list users|curl -X GET "http://localhost:8000/admin/users/" -H "Authorization: Bearer Token"
+POST|/admin/users/|Register a new user| curl -X POST "http://locahost:8000/admin/users/" -H "Authorization: Bearer Token" -H "Content-Type: application/json" -d '{
+    "email": "nuevo@example.com",
+    "password": "stringNuevo",
+    "first_name": "stringNuevo",
+    "last_name": "stringNuevo",
+    "is_admin": false
+}'
+
