@@ -85,6 +85,7 @@ async def get_user(email: str, request: Request):
     try:
         connection = get_db_connection()
         if connection is None:
+            log_main(email, False, "db_connection_failed", request.client.host)
             raise HTTPException(status_code=500, detail="Database connection failed")
         
         cursor = connection.cursor(dictionary=True)
@@ -92,15 +93,15 @@ async def get_user(email: str, request: Request):
         user = cursor.fetchone()
         
         if not user:
-            log_main(user.email, False, "user_not_found", request.client.host)
+            log_main(email, False, "user_not_found", request.client.host)
             raise HTTPException(status_code=404, detail="User not found")
         else:
-            log_main(user.email, True, "user_search", request.client.host)
+            log_main(email, True, "user_search", request.client.host)
 
         return user
         
     except mysql.connector.Error as err:
-        log_main(user.email, False, "db_error", request.client.host)
+        log_main(email, False, "db_error", request.client.host)
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
 
     finally:
