@@ -65,5 +65,5 @@ GET|/users/{email}|	Get user details by email|	-
 ### Available Endpoints in TAG V2
 Method|Endpoint|Description|Request Body Example
 ------|--------|-----------|--------------------
-POST|	/login/|Login Admin|curl -X POST "http://localhost:8000/login/" -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin@example.com&password=password"
-POST|/users/{email}|Get list users|	curl -X GET "http://localhost:8000/admin/users/" -H "Authorization: Bearer Token"
+POST|/login/|Login Admin|curl -X POST "http://localhost:8000/login/" -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin@example.com&password=password"
+POST|/admin/users/|Get list users|	curl -X GET "http://localhost:8000/admin/users/" -H "Authorization: Bearer Token"
