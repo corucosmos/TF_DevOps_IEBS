@@ -5,7 +5,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from database import get_db_connection
 from models import User
-from schemas import UserCreate, UserResponse
+from schemas import UserCreate, UserResponse, AdminUserCreate
 import mysql.connector
 import os
 import logging
