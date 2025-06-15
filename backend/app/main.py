@@ -1,11 +1,19 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from database import get_db_connection
 from models import User
 from schemas import UserCreate, UserResponse
 import mysql.connector
+import logging
 
 app = FastAPI()
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s') # Formato del log
+file_handler = logging.FileHandler(os.path.join(current_directory, "logs", "main.log"))
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 # Configuración CORS para permitir acceso desde cualquier frontend
 app.add_middleware(
@@ -15,6 +23,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def log_main(email: str, success: bool, ip: str = None, action: str):
+    status = "SUCCESS" if success else "FAILED"
+    message = f"{action} - Email: {email} - Status: {status}"
+    if ip:
+        message += f" - IP: {ip}"
+    logger.info(message)
 
 @app.post("/register/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate):
@@ -38,6 +53,13 @@ async def register_user(user: UserCreate):
             (db_user.email, db_user.password, db_user.first_name, db_user.last_name)
         )
         connection.commit()
+
+        log_main(
+            email=user.email,
+            success=True,
+            ip=request.client.host,
+            "register_user"
+        )
         
         return UserResponse(
             email=db_user.email,
@@ -47,6 +69,14 @@ async def register_user(user: UserCreate):
         
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
+
+        log_main(
+            email=user.email,
+            success=False,
+            ip=request.client.host,
+            "register_user"
+        )
+
     finally:
         if connection.is_connected():
             cursor.close()
@@ -65,11 +95,31 @@ async def get_user(email: str):
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-            
+            log_main(
+                email=user.email,
+                success=False,
+                ip=request.client.host,
+                "user_not_found"
+            )
+        else:
+            log_main(
+                email=user.email,
+                success=True,
+                ip=request.client.host,
+                "user_search"
+            )
+        
         return user
         
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
+        
+        log_main(
+            email=user.email,
+            success=False,
+            ip=request.client.host,
+            "user_search"
+        )
     finally:
         if connection.is_connected():
             cursor.close()
