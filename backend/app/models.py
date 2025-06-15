@@ -3,11 +3,12 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User:
-    def __init__(self, email: str, password: str, first_name: str, last_name: str):
+    def __init__(self, email: str, password: str, first_name: str, last_name: str, is_admin: bool = False):
         self.email = email
-        self.password = self.get_password_hash(password)
+        self.password = self.get_password_hash(password) if not password.startswith('$2b$') else password
         self.first_name = first_name
         self.last_name = last_name
+        self.is_admin = is_admin  # Nuevo campo
 
     @staticmethod
     def get_password_hash(password):

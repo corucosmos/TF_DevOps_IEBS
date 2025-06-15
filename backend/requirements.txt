@@ -5,3 +5,4 @@ pydantic
 python-jose[cryptography]
 passlib
 email-validator>=1.3.0
+python-multipart 
