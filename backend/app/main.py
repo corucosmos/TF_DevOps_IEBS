@@ -6,6 +6,7 @@ from schemas import UserCreate, UserResponse
 import mysql.connector
 import os
 import logging
+from pathlib import Path 
 
 app = FastAPI()
 current_directory = Path(__file__).parent
