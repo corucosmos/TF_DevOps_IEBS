@@ -8,11 +8,15 @@ import os
 import logging
 
 app = FastAPI()
+current_directory = Path(__file__).parent
+
+LOG_DIR = current_directory / "logs"
+LOG_DIR.mkdir(exist_ok=True)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s') # Formato del log
-file_handler = logging.FileHandler(os.path.join(current_directory, "logs", "main.log"))
+file_handler = logging.FileHandler(LOG_DIR / "main.log")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
