@@ -139,7 +139,7 @@ async def register_user(user: UserCreate, request: Request):
         return UserResponse(
             email=db_user.email,
             first_name=db_user.first_name,
-            last_name=db_user.last_name
+            last_name=db_user.last_name,
             is_admin=False
         )
         
