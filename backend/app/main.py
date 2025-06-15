@@ -258,3 +258,56 @@ async def list_all_users(
         if connection.is_connected():
             cursor.close()
             connection.close()
+
+@app.post("/admin/users/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def create_user(
+    user: AdminUserCreate,
+    request: Request,
+    current_admin: User = Depends(get_current_admin)  # Solo accesible por admins
+):
+
+    try:
+        db_user = User(
+            email=user.email,
+            password=user.password,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            is_admin=user.is_admin
+        )
+
+        connection = get_db_connection()
+        if connection is None:
+            log_main(current_admin.email, False, "db_connection_failed", request.client.host)
+            raise HTTPException(status_code=500, detail="Database connection failed")
+        
+        cursor = connection.cursor()
+        
+        # Verificar si el usuario ya existe
+        cursor.execute("SELECT email FROM users WHERE email = %s", (db_user.email,))
+        if cursor.fetchone():
+            log_main(current_admin.email, False, "admin_create_user_existing", request.client.host)
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Insertar nuevo usuario
+        cursor.execute(
+            "INSERT INTO users (email, password, first_name, last_name, is_admin) VALUES (%s, %s, %s, %s, %s)",
+            (db_user.email, db_user.password, db_user.first_name, db_user.last_name, db_user.is_admin)
+        )
+        connection.commit()
+        
+        log_main(current_admin.email, True, f"admin_created_user:{db_user.email}", request.client.host)
+
+        return UserResponse(
+            email=db_user.email,
+            first_name=db_user.first_name,
+            last_name=db_user.last_name,
+            is_admin=db_user.is_admin
+        )
+        
+    except mysql.connector.Error as err:
+        log_main(current_admin.email, False, "admin_create_user_error", request.client.host)
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()

@@ -13,3 +13,6 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AdminUserCreate(UserCreate):
+    is_admin: bool = False
