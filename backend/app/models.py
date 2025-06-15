@@ -8,6 +8,7 @@ class User:
         self.password = self.get_password_hash(password)
         self.first_name = first_name
         self.last_name = last_name
+        self.is_admin = is_admin  # Nuevo campo
 
     @staticmethod
     def get_password_hash(password):

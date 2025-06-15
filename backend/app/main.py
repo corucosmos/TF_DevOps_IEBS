@@ -178,7 +178,7 @@ async def login_user(
             password=user_data['password'],
             first_name=user_data['first_name'],
             last_name=user_data['last_name'],
-            is_admin=user_data['is_admin']
+            is_admin=user_data.get('is_admin', False) #user_data['is_admin']
         )
         
         if not user.verify_password(form_data.password):
