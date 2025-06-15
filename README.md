@@ -67,11 +67,5 @@ Method|Endpoint|Description|Request Body Example
 ------|--------|-----------|--------------------
 POST|/login/|Login Admin|curl -X POST "http://localhost:8000/login/" -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin@example.com&password=password"
 GET|/admin/users/|Get list users|curl -X GET "http://localhost:8000/admin/users/" -H "Authorization: Bearer Token"
-POST|/admin/users/|Register a new user| curl -X POST "http://locahost:8000/admin/users/" -H "Authorization: Bearer Token" -H "Content-Type: application/json" -d '{
-    "email": "nuevo@example.com",
-    "password": "stringNuevo",
-    "first_name": "stringNuevo",
-    "last_name": "stringNuevo",
-    "is_admin": false
-}'
+POST|/admin/users/|Register a new user| curl -X POST "http://locahost:8000/admin/users/" -H "Authorization: Bearer Token" -H "Content-Type: application/json" -d '{"email": "nuevo@example.com","password": "stringNuevo","first_name": "stringNuevo","last_name": "stringNuevo","is_admin": false}'
 
