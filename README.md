@@ -51,16 +51,16 @@ TF_DevOps_IEBS/
  │         ├── requirements.txt   (Python dependencies)
  │         └── app/               (Application code)
  │                ├── tests/  
- │                      ├── __init__.py
- │                      ├── conftest.py     (Pytest application)
- │                      └── test_models.py  (Test application)
+ │                │     ├── __init__.py
+ │                │     ├── conftest.py     (Pytest application)
+ │                │     └── test_models.py  (Test application)
  │                ├── __init__.py
  │                ├── main.py     (FastAPI application)
  │                ├── database.py (MySQL connection)
  │                ├── models.py   (User model)
  │                └── schemas.py  (Pydantic schemas)
  └── mysql/
-    └── init.sql                  (Database initialization script)
+          └── init.sql            (Database initialization script)
 ```
 
 
