@@ -3,6 +3,9 @@ uvicorn
 mysql-connector-python
 pydantic
 python-jose[cryptography]
-passlib
+passlib[bcrypt]==1.7.4
+bcrypt==4.1.2  # Añade esta línea
 email-validator>=1.3.0
-python-multipart 
+python-multipart
+pytest==8.0.0
+pytest-cov==4.1.0
