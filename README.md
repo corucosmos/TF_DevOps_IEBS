@@ -30,6 +30,7 @@
     ```
 ### API Access
 * The API will be available at http://localhost:8000
+* The Admin Frontend will be available at http://localhost:8501
 
 ### API Documentation
 * Swagger UI: http://localhost:8000/docs
@@ -41,6 +42,10 @@ TF_DevOps_IEBS/
  ├── docker-compose.yml           (Docker orchestration)
  ├── .env                         (Environment variables)
  ├── .gitignore                   (Git Ignore Files)
+ ├── admin-frontend/
+ │         ├── Dockerfile         (Admin Fronted container setup)
+ │         ├── requirements.txt   (Python dependencies)
+ │         └── app.py             (Application code)
  ├── backend/
  │         ├── Dockerfile         (Backend container setup)
  │         ├── requirements.txt   (Python dependencies)
