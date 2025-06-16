@@ -50,6 +50,10 @@ TF_DevOps_IEBS/
  │         ├── Dockerfile         (Backend container setup)
  │         ├── requirements.txt   (Python dependencies)
  │         └── app/               (Application code)
+ │                ├── tests/  
+ │                      ├── __init__.py
+ │                      ├── conftest.py     (Pytest application)
+ │                      └── test_models.py  (Test application)
  │                ├── __init__.py
  │                ├── main.py     (FastAPI application)
  │                ├── database.py (MySQL connection)
