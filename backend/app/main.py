@@ -25,7 +25,7 @@ file_handler = logging.FileHandler(LOG_DIR / "main.log")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-SECRET_KEY = os.getenv("SECRET_KEY") #"tu_super_secreto_aqui"  # Deberías usar una variable de entorno en producción
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
