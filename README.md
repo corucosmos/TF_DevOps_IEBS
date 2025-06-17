@@ -69,7 +69,7 @@ TF_DevOps_IEBS/
 Method|Endpoint|Description|Request Body Example
 ------|--------|-----------|--------------------
 POST|/register/|Register a new user|{"email":"user@example.com","password":"securePass123","first_name":"John","last_name":"Doe"}
-GET|/users/{email}|	Get user details by email|	-
+GET|/users/{email}|	Get user details by email|{"email":"user@example.com","first_name":"string","last_name":"string"}
 
 ### Available Endpoints in TAG V2
 Method|Endpoint|Description|Request Body Example
