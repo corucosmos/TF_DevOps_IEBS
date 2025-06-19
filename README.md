@@ -66,6 +66,9 @@ TF_DevOps_IEBS/
  │                ├── models.py    (User model)
  │                └── schemas.py   (Pydantic schemas)
  ├── nginx/
+ │        ├── certs/   
+ │        │       ├── selfsigned.crt (443 crt)
+ │        │       └── selfsigned.key (443 key)
  │        ├── conf.d/            
  │        │       └── default.conf (nginx proxy initialization config)
  │        └── nginx.conf
