@@ -1,4 +1,22 @@
 services:
+
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+      #- "443:443"  # Opcional para HTTPS
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      #- ./certs:/etc/nginx/certs  # Solo si usas HTTPS
+    networks:
+      - app-network
+    depends_on:
+      - backend
+      - admin-frontend
+      - grafana
+
   mysql:
     image: mysql:8.0
     container_name: mysql_container
@@ -10,8 +28,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "3306:3306"
+    #ports:
+    #  - "3306:3306"
     networks:
       - app-network
 
@@ -20,8 +38,8 @@ services:
     env_file:
       - .env
     container_name: backend_container
-    ports:
-      - "8000:8000"
+    #ports:
+    #  - "8000:8000"
     depends_on:
       - mysql
     environment:
@@ -37,8 +55,8 @@ services:
   admin-frontend:
     build: ./admin-frontend
     container_name: admin_fronted_container
-    ports:
-      - "8501:8501"
+    #ports:
+    #  - "8501:8501"
     depends_on:
       - backend
     environment:
@@ -51,8 +69,8 @@ services:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
     restart: unless-stopped
-    ports:
-      - "9100:9100"
+#    ports:
+#      - "9100:9100"
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -74,8 +92,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml  
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - "9090:9090"
+    #ports:
+    #  - "9090:9090"
     restart: unless-stopped
     depends_on:
       - node_exporter  
@@ -97,8 +115,8 @@ services:
   loki:
     image: grafana/loki
     container_name: loki
-    ports:
-      - 3100:3100
+    #ports:
+    #  - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
     depends_on:
       - promtail 
@@ -108,8 +126,11 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "3000:3000"
+    #ports:
+    #  - "3000:3000"
+    environment:
+      GF_SERVER_ROOT_URL: "http://localhost/grafana/"
+      #GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     volumes:
       - grafana-storage:/var/lib/grafana
     restart: unless-stopped

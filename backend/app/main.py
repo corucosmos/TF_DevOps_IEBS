@@ -12,7 +12,11 @@ import logging
 from pathlib import Path
 from typing import List 
 
-app = FastAPI()
+app = FastAPI(
+    root_path="/api",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
 current_directory = Path(__file__).parent
 
 LOG_DIR = current_directory / "logs"
