@@ -31,15 +31,16 @@
 ### API Access
 * The API will be available at http://localhost/api
 
+### API Documentation
+* Swagger UI: http://localhost/docs
+* ReDoc: http://localhost/redoc
+
 ### Admin Access
 * The Admin Frontend will be available at http://localhost/admin/
 
 ### Grafana Access
 * The Grafana Frontend will be available at http://localhost/grafana/
 
-### API Documentation
-* Swagger UI: http://localhost/docs
-* ReDoc: http://localhost/redoc
 
 ### Project Structure
 ```bash
